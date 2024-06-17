@@ -1,0 +1,10 @@
+/build
+/asset
+
+/vk_note
+note.md
+
+/.vscode
+/.xmake
+
+/src/show
