@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <span>
 #include <config.h>
+// #include <openmesh_simplify.h>
 
 using namespace std;
 
@@ -388,7 +389,11 @@ void build_parent(
     }
 
     Sphere parent_lod_bound=Sphere::construct_from_sphere_bounds(lod_bounds.data(),lod_bounds.size());
-        
+    
+    // OpenMeshSimplifier openmesh_simplifier(pos,idx);
+    // openmesh_simplifier.simplify((Config::cluster_size-2)*(cluster_group.clusters.size()/2),cluster_group.external_edges,clusters);
+    // openmesh_simplifier.to_vec(pos,idx);
+
     MeshSimplifier simplifier(pos.data(),pos.size(),idx.data(),idx.size());
 
     HashTable edge_hash(cluster_group.external_edges.size());

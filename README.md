@@ -13,12 +13,17 @@ LOD测试
 dragon:
 verts: 435545, triangles: 871306
 
+三角面片:
 ![](./pics/tri.PNG)
-三角面片
+
+
+cluster:
 ![](./pics/cluster.PNG)
-cluster
+
+group:
 ![](./pics/group.PNG)
-group
+
+LOD:
 ![](./pics/lod.gif)
 
 avg_fps:1603.765381
@@ -26,6 +31,9 @@ avg_fps:1603.765381
 
 
 ## Ref
+
 UE5.0源码
+
 GAMES104（https://games104.boomingtech.com/sc/）
+
 https://github.com/liameitimie/learn-nanite
