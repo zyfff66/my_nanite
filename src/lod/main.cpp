@@ -15,7 +15,7 @@ using namespace vk;
 const u32 width=1920;
 const u32 height=1080;
 
-// #define debug_fps
+#define debug_fps
 
 struct ConstContext
 {
@@ -109,7 +109,7 @@ int main()
 {
     u32 num_clusters=0;
     vector<u32> data;    
-# if 1
+#if 0
     Mesh mesh;
     mesh.load("../../asset/dragon.stl");
     NaniteMesh nanite_mesh;
@@ -147,7 +147,9 @@ int main()
     vector<Buffer> indirect_buffer(vk::num_swapchain_image());
     for(auto& buffer:indirect_buffer)
     {
+        // buffer=Buffer::create_buffer(BufferUsage::StorageBuffer|BufferUsage::IndirectBuffer,MemoryUsage::Download,4*sizeof(u32)).unwrap();
         buffer=Buffer::create_buffer(BufferUsage::StorageBuffer|BufferUsage::IndirectBuffer,MemoryUsage::Upload,4*sizeof(u32)).unwrap();
+        
     }
 
     vector<Buffer> visiable_clusters_buffer(vk::num_swapchain_image());
@@ -155,8 +157,8 @@ int main()
     {
         buffer=Buffer::create_buffer(
             BufferUsage::StorageBuffer,
-            MemoryUsage::Download,
-            // MemoryUsage::GpuOnly,
+            // MemoryUsage::Download,
+            MemoryUsage::GpuOnly,
             (1<<20)
             ).unwrap();
     }
@@ -303,9 +305,9 @@ int main()
 
         f32 tick_time=timer.us()/1000.f;
 
-#ifdef debug_fps
-        printf("frame:%d,fps:%f\n",frame_cnt,1000.f/tick_time);
-#endif
+// #ifdef debug_fps
+//         printf("frame:%d,fps:%f\n",frame_cnt,1000.f/tick_time);
+// #endif
         timer.reset();
 
         // if(window.is_key_down('W')) camera.move_front(tick_time);
