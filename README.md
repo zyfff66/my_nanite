@@ -11,6 +11,8 @@
     - [x] compute shader实时计算可见的cluster进行渲染，达到实时LOD
     - Instance Cull: BVH
     - [x] Cluster Cull: 视锥剔除和HZB
+        - 视锥剔除只做了不完全在视锥内的cluster
+        - HZB没有做two pass，直接用的上一帧的结果
 
 - Rasterization：
     - 硬件光栅化和软件光栅化

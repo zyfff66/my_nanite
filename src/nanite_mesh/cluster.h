@@ -3,6 +3,7 @@
 #include <bounds.h>
 #include <vector>
 #include <vec_types.h>
+#include <bvh_node.h>
 
 
 struct Cluster
@@ -25,7 +26,7 @@ struct Cluster
 };
 
 struct ClusterGroup{
-    Sphere bounds;
+    Bounds bounds;
     Sphere lod_bounds;
     f32 min_lod_error;
     f32 max_parent_lod_error;
@@ -45,4 +46,5 @@ void build_a_level(
     u32 level_offset,
     u32 num_level_cluster,
     std::vector<ClusterGroup>& cluster_groups,
-    u32 mip_level);
+    u32 mip_level,
+    std::shared_ptr<BVHNode>& root);

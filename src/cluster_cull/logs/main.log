@@ -1,0 +1,37 @@
+F0620 21:12:48.358] Error: EXCEPTION_ACCESS_VIOLATION
+00007FFA5AB9CE56 (ntdll): (filename not available): _C_specific_handler
+00007FFA5ABB292F (ntdll): (filename not available): _chkstk
+00007FFA5AB62554 (ntdll): (filename not available): RtlRaiseException
+00007FFA5ABB143E (ntdll): (filename not available): KiUserExceptionDispatcher
+00007FF9A609CC9C (VkLayer_khronos_validation): (filename not available): (function-name not available)
+00007FF9A6097F27 (VkLayer_khronos_validation): (filename not available): (function-name not available)
+00007FF9A6130972 (VkLayer_khronos_validation): (filename not available): (function-name not available)
+00007FF9A61288C0 (VkLayer_khronos_validation): (filename not available): (function-name not available)
+00007FF9A62A599C (VkLayer_khronos_validation): (filename not available): vkEnumerateInstanceLayerProperties
+00007FFA12CE811B (vulkan-1): (filename not available): vkResetEvent
+00007FF7BC97ED9D (main): (filename not available): (function-name not available)
+00007FF7BC9453FC (main): (filename not available): (function-name not available)
+00007FF7BC9473D7 (main): (filename not available): (function-name not available)
+00007FF7BC991FCC (main): (filename not available): (function-name not available)
+00007FFA598C7344 (KERNEL32): (filename not available): BaseThreadInitThunk
+00007FFA5AB5CC91 (ntdll): (filename not available): RtlUserThreadStart
+F0622 12:49:00.982] Error: EXCEPTION_ACCESS_VIOLATION
+00007FFEFCCFCE56 (ntdll): (filename not available): _C_specific_handler
+00007FFEFCD1292F (ntdll): (filename not available): _chkstk
+00007FFEFCCC2554 (ntdll): (filename not available): RtlRaiseException
+00007FFEFCD1143E (ntdll): (filename not available): KiUserExceptionDispatcher
+00007FF773157AC3 (main): (filename not available): (function-name not available)
+00007FF773154879 (main): (filename not available): (function-name not available)
+00007FF7734CA17C (main): (filename not available): (function-name not available)
+00007FFEFBFD7344 (KERNEL32): (filename not available): BaseThreadInitThunk
+00007FFEFCCBCC91 (ntdll): (filename not available): RtlUserThreadStart
+F0622 12:49:36.757] Error: EXCEPTION_ACCESS_VIOLATION
+00007FFEFCCFCE56 (ntdll): (filename not available): _C_specific_handler
+00007FFEFCD1292F (ntdll): (filename not available): _chkstk
+00007FFEFCCC2554 (ntdll): (filename not available): RtlRaiseException
+00007FFEFCD1143E (ntdll): (filename not available): KiUserExceptionDispatcher
+00007FF722967AC3 (main): (filename not available): (function-name not available)
+00007FF722964879 (main): (filename not available): (function-name not available)
+00007FF722CDA0DC (main): (filename not available): (function-name not available)
+00007FFEFBFD7344 (KERNEL32): (filename not available): BaseThreadInitThunk
+00007FFEFCCBCC91 (ntdll): (filename not available): RtlUserThreadStart

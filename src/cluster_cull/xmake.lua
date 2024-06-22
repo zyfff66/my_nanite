@@ -1,4 +1,4 @@
-target("main")
+target("cluster_cull")
     add_files("*.cpp")
     add_deps("nanite_mesh","vk","vk_win")
     add_includedirs(".",{public=true})

@@ -162,7 +162,7 @@ int main()
 #if 1
     nanite_mesh.save(data,"nanite_mesh.txt");
 #endif  
-    // return 0;
+    return 0;
 #else
     NaniteMesh::load("nanite_mesh.txt",data,num_clusters);
     num_groups=data[1];

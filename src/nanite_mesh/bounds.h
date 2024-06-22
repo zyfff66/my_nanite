@@ -25,7 +25,7 @@ struct Bounds
 
 };
 
-struct  Sphere
+struct Sphere
 {
     vec3 center;
     f32 radius;

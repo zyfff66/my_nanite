@@ -4,10 +4,14 @@
 #include "cluster.h"
 #include <co/fs.h>
 
+#include<queue>
+
 using namespace fmt;
 
-
 void NaniteMesh::build(Mesh& mesh){
+    virtual_bvh_node=std::make_shared<BVHNode>();
+    virtual_bvh_node->type=BVHNodeType::VIRTUAL_NODE;
+
     print("\n-------------------- begin building nanite mesh --------------------\n\n");
 
     auto& [pos,idx]=mesh;
@@ -35,7 +39,11 @@ void NaniteMesh::build(Mesh& mesh){
         u32 next_level_offset=clusters.size();
         u32 num_level_clusters=clusters.size()-level_offset;
         if(num_level_clusters<=1) break;
-        build_a_level(clusters,level_offset,num_level_clusters,cluster_groups,mip_level);
+
+        std::shared_ptr<BVHNode> root;
+        build_a_level(clusters,level_offset,num_level_clusters,cluster_groups,mip_level,root);
+        virtual_bvh_node->children.push_back(root);
+
         level_offset=next_level_offset;
         mip_level++;
     }
@@ -45,10 +53,6 @@ void NaniteMesh::build(Mesh& mesh){
     print("total clusters: {}\n\n",clusters.size());
     print("-------------------- end build nanite mesh --------------------\n\n");
 }   
-
-
-
-
 
 void NaniteMesh::save(const vector<u32>& data,string save_path)
 {
