@@ -5,11 +5,16 @@
     - [x] Mesh化简
     - [x] 将三角面片划分为Cluster
     - [x] 将Cluster分为Group，同时建立Group之间的父子关系（交由Compute Shader统一处理）
+    - 构建BVH结构
     - 并行化
 - GPU:
     - [x] compute shader实时计算可见的cluster进行渲染，达到实时LOD
-    - [x] 视锥剔除和遮挡剔除
-    - BVH
+    - Instance Cull: BVH
+    - [x] Cluster Cull: 视锥剔除和HZB
+
+- Rasterization：
+    - 硬件光栅化和软件光栅化
+    - 基于Visibility Buffer的渲染
 
 ## Result
 dragon:
@@ -31,16 +36,16 @@ LOD:
 
 avg_fps:1882.489136
 
-### 视锥剔除遮挡剔除测试
+### Instance Cull:BVH
+Doing.....
 
-LOD & Culling:
+### Cluster Cull:视锥剔除+HZB遮挡剔除
+
+LOD & Cluster Culling:
 ![](./pics/culling.gif)
 
 avg_fps:1640.190918
 
-
-## Doing...
-在看UE源码的时候，看到UE做剔除时应用到了BVH。要把BVH加到代码中。
 
 ## Ref
 
@@ -49,9 +54,3 @@ UE5.0源码
 GAMES104（https://games104.boomingtech.com/sc/）
 
 https://github.com/liameitimie/learn-nanite
-
-
-## Log
-目前会出现闪烁，也就是破碎的情况。
-
-想用openmesh开源库进行简化，但寄，这个之后有时间再进行调整。

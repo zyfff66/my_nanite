@@ -629,9 +629,6 @@ int main()
         FrameContext frame_context{vp_mat,v_mat,p_mat,vp_mat2,view_mode};
         frame_context_buffers[swapchain_idx].update(&frame_context,sizeof(FrameContext));
 
-        vector<u32> tmp(4);
-        vk::read_from_buffer(tmp.data(),indirect_buffer[swapchain_idx],sizeof(u32)*4);
-
         u32 c[4]={128*3,0,0,0};
         indirect_buffer[swapchain_idx].update(c,sizeof(u32)*4);
 

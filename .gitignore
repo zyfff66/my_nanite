@@ -1,3 +1,5 @@
+.gitignore
+
 /build
 /asset
 /deprecated
@@ -9,3 +11,4 @@ note.md
 /.xmake
 
 /src/show
+/src/main/logs
