@@ -29,6 +29,8 @@ void draw_indexed(
 
 void dispatch(u64 cmd,u32 x,u32 y,u32 z);
 
+void dispatch_indirect(u64 cmd,u32 x,u32 y,u32 z);
+
 void draw_indirect(u64 cmd,Buffer buffer);
 
 }

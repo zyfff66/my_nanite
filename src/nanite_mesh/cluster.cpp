@@ -7,7 +7,6 @@
 #include <vec_math.h>
 #include "bounds.h"
 #include <assert.h>
-#include <span>
 #include <config.h>
 #include <stack>
 // #include <openmesh_simplify.h>
@@ -173,7 +172,7 @@ void cluster_triangles(
  * @param edge_link_graph 相邻的外围边的关系图
  */
 void build_clusters_edge(
-    span<const Cluster> clusters,
+    const vector<Cluster>& clusters,
     const vector<pair<u32,u32>>& external_edges,
     Graph& edge_link_graph)
 {
@@ -298,7 +297,8 @@ void group_clusters(
     u32 mip_level)
 {
     // 当前level cluster
-    span<const Cluster> clusters_current_level(clusters.begin()+level_offset,num_level_cluster);
+    vector<Cluster> clusters_current_level(clusters.begin()+level_offset,clusters.begin()+level_offset+num_level_cluster);
+
 
     // 之前把三角形聚成cluster；这里把cluster视为之前的三角形，将cluster聚成group;
     vector<u32> cluster_map;// 外围边映射为边属于的cluster_id
@@ -504,14 +504,14 @@ std::shared_ptr<BVHNode> buid_bvh(u32 cluster_group_start,u32 cluster_group_end,
     {
         cluster_group_index.push_back(i);
     }
-    for(u32 i=cluster_group_start;i<=cluster_group_end;i++)
+    for(u32 i=cluster_group_start;i<cluster_group_end;i++)
     {
         build_group_bounds(cluster_groups[i],clusters);
     }
 
     std::shared_ptr<BVHNode> root = std::make_shared<BVHNode>();
-    root->start = cluster_group_start;
-    root->end = cluster_group_end;
+    root->start = cluster_group_start;// 这一层 cluster_group开始的序号
+    root->end = cluster_group_end;// 这一层 cluster_group结束的序号（不含）
     root->type=BVHNodeType::NODE;
    
     std::stack<std::shared_ptr<BVHNode>> bvh_stack;
@@ -530,6 +530,7 @@ std::shared_ptr<BVHNode> buid_bvh(u32 cluster_group_start,u32 cluster_group_end,
                 auto& group=cluster_groups[i];
                 curr_node->bounds = curr_node->bounds+group.bounds;
             }
+            // TODO:cluster_group_index的按照AABB的结果应该映射到树上
             if(curr_node->end-curr_node->start>=4)// 划分
             {
                 vec3 diff=curr_node->bounds.max-curr_node->bounds.min;
@@ -538,39 +539,40 @@ std::shared_ptr<BVHNode> buid_bvh(u32 cluster_group_start,u32 cluster_group_end,
                 if(diff[2]>diff[axis_longest]) axis_longest=2;
                 std::sort(cluster_group_index.begin() + curr_node->start, cluster_group_index.begin() + curr_node->end, [&](u32 a, u32 b) {
 				    return cluster_groups[a].bounds.min[axis_longest] < cluster_groups[b].bounds.min[axis_longest];
-				    });
+				});
 
                 u32 mid = (curr_node->start + curr_node->end) / 2;
                 u32 axis2 = (axis_longest+1)%3;
                 u32 axis3 = (axis_longest+2)%3;
                 u32 axis_second=diff[axis2]>diff[axis3]?axis2:axis3;
-                std::sort(cluster_group_index.begin() + curr_node->start, cluster_group_index.begin() + mid, [&](u32 a, u32 b) {
+                std::sort(cluster_group_index.begin() + curr_node->start, cluster_group_index.begin() + mid, [&](u32 a, u32 b) 
+                {
                     return cluster_groups[a].bounds.min[axis_second] < cluster_groups[b].bounds.min[axis_second];
-					});
+				});
                 std::sort(cluster_group_index.begin() + mid, cluster_group_index.begin() + curr_node->end, [&](u32 a, u32 b) {
                     return cluster_groups[a].bounds.min[axis_second] < cluster_groups[b].bounds.min[axis_second];
-					});
+				});
 
                 std::shared_ptr<BVHNode> node1= std::make_shared<BVHNode>();
-                node1->start=curr_node->start;
-                node1->end= (curr_node->start + mid) / 2;
+                node1->start= curr_node->start;
+                node1->end= curr_node->start+(mid-curr_node->start) / 2;
                 node1->depth = curr_node->depth + 1;
                 node1->type=BVHNodeType::NODE;
 
                 std::shared_ptr<BVHNode> node2= std::make_shared<BVHNode>();
-                node2->start=(curr_node->start + mid) / 2;
+                node2->start=curr_node->start+(mid-curr_node->start) / 2;
                 node2->end= mid;
                 node2->depth = curr_node->depth + 1;
                 node2->type=BVHNodeType::NODE;
 
                 std::shared_ptr<BVHNode> node3= std::make_shared<BVHNode>();
                 node3->start=mid;
-                node3->end= (curr_node->end + mid) / 2;
+                node3->end= mid+(curr_node->end-mid) / 2;
                 node3->depth = curr_node->depth + 1;
                 node3->type=BVHNodeType::NODE;
 
                 std::shared_ptr<BVHNode> node4= std::make_shared<BVHNode>();
-                node4->start=(curr_node->end + mid) / 2;
+                node4->start= mid+(curr_node->end-mid) / 2;
                 node4->end= curr_node->end;
                 node4->depth = curr_node->depth + 1;
                 node4->type=BVHNodeType::NODE;
@@ -586,7 +588,8 @@ std::shared_ptr<BVHNode> buid_bvh(u32 cluster_group_start,u32 cluster_group_end,
                 bvh_stack.push(node4);
             }
             else
-            {//curr_node->end-curr_node->start<4
+            {
+                // curr_node->end-curr_node->start<4
                 curr_node->type=BVHNodeType::NODE;
                 for (u32 i = curr_node->start; i < curr_node->end; ++i)
                 {
@@ -604,11 +607,12 @@ std::shared_ptr<BVHNode> buid_bvh(u32 cluster_group_start,u32 cluster_group_end,
             }
         }
         else
-        {// 叶子节点 把group中的cluster存进来
-            auto& group = cluster_groups[curr_node->start];
-            curr_node->clusters=group.clusters;
-            curr_node->bounds.min=group.bounds.min;
-            curr_node->bounds.max=group.bounds.max;
+        {// 叶子节点 
+            // auto& group = cluster_groups[curr_node->start];
+            // curr_node->clusters=group.clusters;
+            curr_node->group_id=curr_node->start;
+            curr_node->bounds.min=cluster_groups[curr_node->start].bounds.min;
+            curr_node->bounds.max=cluster_groups[curr_node->start].bounds.max;
         }
     }    
     return root;
@@ -630,6 +634,6 @@ void build_a_level(
         build_parent(cluster_groups[i],clusters);
     }
     // BVH
-    root=buid_bvh(num_pre_group,cluster_groups.size()-1,cluster_groups,clusters);
+    root=buid_bvh(num_pre_group,cluster_groups.size(),cluster_groups,clusters);
 
 }

@@ -7,16 +7,16 @@
 
 Bounds Bounds::operator+(const Bounds& other){
     Bounds bounds;
-    bounds.min={
-        .x=std::min(min.x,other.min.x),
-        .y=std::min(min.y,other.min.y),
-        .z=std::min(min.z,other.min.z),
-    };
-    bounds.max={
-        .x=std::max(max.x,other.max.x),
-        .y=std::max(max.y,other.max.y),
-        .z=std::max(max.z,other.max.z),
-    };
+
+    bounds.min.x=std::min(min.x,other.min.x);
+    bounds.min.y=std::min(min.y,other.min.y);
+    bounds.min.z=std::min(min.z,other.min.z);
+
+    bounds.max.x=std::max(max.x,other.max.x);
+    bounds.max.y=std::max(max.y,other.max.y);
+    bounds.max.z=std::max(max.z,other.max.z);
+
+
     return bounds;
 }
 

@@ -9,3 +9,5 @@
 #include "command_buffer/command_buffer.h"
 #include "image/swapchain.h"
 #include "write_bindless_set.h"
+
+#include "pipeline/bvh_compute.h"

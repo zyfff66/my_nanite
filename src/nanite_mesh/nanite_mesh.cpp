@@ -52,7 +52,43 @@ void NaniteMesh::build(Mesh& mesh){
     print("----------------------------------------\n");
     print("total clusters: {}\n\n",clusters.size());
     print("-------------------- end build nanite mesh --------------------\n\n");
-}   
+}
+
+u32 NaniteMesh::get_depth0()
+{
+    return virtual_bvh_node->children.size();
+}
+
+std::vector<u32> NaniteMesh::get_depths()
+{
+    std::vector<u32> depth_count;
+    queue<std::shared_ptr<BVHNode>> q;
+    q.push(virtual_bvh_node);
+    bool is_virtual=true;
+
+    while(!q.empty())
+    {
+        u32 size=q.size();
+        if(!is_virtual)
+        {
+            depth_count.push_back(size);
+        }
+        if(is_virtual)
+        {
+            is_virtual=false;
+        }
+        for(u32 i=0;i<size;i++)
+        {
+            std::shared_ptr<BVHNode> curr=q.front();
+            q.pop();
+            for(auto& child:curr->children)
+            {
+                q.push(child);
+            }
+        }
+    }
+    return depth_count;
+}
 
 void NaniteMesh::save(const vector<u32>& data,string save_path)
 {
@@ -63,7 +99,26 @@ void NaniteMesh::save(const vector<u32>& data,string save_path)
     print("finish write.\n");
 }
 
+void NaniteMesh::save(const vector<u32>& data,string save_path, string depth_path)
+{
+    // write
+    print("# writting nanite mesh data at: {}\n",save_path);
+    fs::file file(save_path,'w');
+    file.write(data.data(),data.size()*sizeof(u32));
+
+    std::vector<u32> depths=get_depths();
+    fs::file depth_file(depth_path,'w');
+    depth_file.write(depths.data(),depths.size()*sizeof(u32));
+    print("finish write.\n");
+}
+
 void NaniteMesh::load(string load_path,vector<u32>& data,u32& num_clusters)
+{
+    load(load_path,data);
+    num_clusters=data[0];
+}
+
+void NaniteMesh::load(string load_path,vector<u32>& data)
 {
     fs::file file(load_path,'r');
     if(!file)
@@ -75,6 +130,11 @@ void NaniteMesh::load(string load_path,vector<u32>& data,u32& num_clusters)
 
     print("# loading packed data...\n");
     file.read(data.data(),file.size());
-    num_clusters=data[0];
     print("finish load: {}\n",load_path);
+}
+
+void NaniteMesh::load(string load_path,vector<u32>& data,string depth_path,std::vector<u32>& depths)
+{
+    load(load_path,data);
+    load(depth_path,depths);
 }

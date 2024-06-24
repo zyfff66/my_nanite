@@ -46,6 +46,88 @@ void write_bindless_set(u32 idx,Buffer* buffers,u32 buffer_count){
     vkUpdateDescriptorSets((VkDevice)device(),1,&write_desc,0,nullptr);
 }
 
+void write_bindless_bvh_set0(u32 idx,Buffer buffer,u32 binding){
+    VkDescriptorBufferInfo buffer_info={
+        .buffer=(VkBuffer)buffer.handle,
+        .offset=0,
+        .range=buffer.size
+    };
+    VkWriteDescriptorSet write_desc={
+        .sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet=(VkDescriptorSet)bindless_buffer_bvh_set0(),
+        .dstBinding=binding,
+        .dstArrayElement=idx,
+        .descriptorCount=1,
+        .descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        .pBufferInfo=&buffer_info
+    };
+    vkUpdateDescriptorSets((VkDevice)device(),1,&write_desc,0,nullptr);
+}
+
+void write_bindless_bvh_set0(u32 idx,Buffer* buffers,u32 buffer_count,u32 binding){
+    vector<VkDescriptorBufferInfo> buffer_infos(buffer_count);
+    u32 i=0;
+    for(auto& buffer_info:buffer_infos){
+        buffer_info=VkDescriptorBufferInfo{
+            .buffer=(VkBuffer)buffers[i].handle,
+            .offset=0,
+            .range=buffers[i].size
+        };
+        i++;
+    }
+    VkWriteDescriptorSet write_desc={
+        .sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet=(VkDescriptorSet)bindless_buffer_bvh_set0(),
+        .dstBinding=binding,
+        .dstArrayElement=idx,
+        .descriptorCount=buffer_count,
+        .descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        .pBufferInfo=buffer_infos.data()
+    };
+    vkUpdateDescriptorSets((VkDevice)device(),1,&write_desc,0,nullptr);
+}
+
+void write_bindless_bvh_set1(u32 idx,Buffer buffer,u32 binding){
+    VkDescriptorBufferInfo buffer_info={
+        .buffer=(VkBuffer)buffer.handle,
+        .offset=0,
+        .range=buffer.size
+    };
+    VkWriteDescriptorSet write_desc={
+        .sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet=(VkDescriptorSet)bindless_buffer_bvh_set1(),
+        .dstBinding=binding,
+        .dstArrayElement=idx,
+        .descriptorCount=1,
+        .descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        .pBufferInfo=&buffer_info
+    };
+    vkUpdateDescriptorSets((VkDevice)device(),1,&write_desc,0,nullptr);
+}
+
+void write_bindless_bvh_set1(u32 idx,Buffer* buffers,u32 buffer_count,u32 binding){
+    vector<VkDescriptorBufferInfo> buffer_infos(buffer_count);
+    u32 i=0;
+    for(auto& buffer_info:buffer_infos){
+        buffer_info=VkDescriptorBufferInfo{
+            .buffer=(VkBuffer)buffers[i].handle,
+            .offset=0,
+            .range=buffers[i].size
+        };
+        i++;
+    }
+    VkWriteDescriptorSet write_desc={
+        .sType=VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet=(VkDescriptorSet)bindless_buffer_bvh_set1(),
+        .dstBinding=binding,
+        .dstArrayElement=idx,
+        .descriptorCount=buffer_count,
+        .descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        .pBufferInfo=buffer_infos.data()
+    };
+    vkUpdateDescriptorSets((VkDevice)device(),1,&write_desc,0,nullptr);
+}
+
 void write_bindless_set(u32 idx,CombinedImageSampler img_sampler){
     VkDescriptorImageInfo image_info={
         .sampler=(VkSampler)img_sampler.sampler->handle,

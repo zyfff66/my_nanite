@@ -13,7 +13,13 @@ struct NaniteMesh
 
     void build(Mesh& mesh);
     void save(const std::vector<u32>& data,std::string save_path);
+    void save(const std::vector<u32>& data,std::string save_path, std::string depth_path);
+    static void load(std::string load_path,std::vector<u32>& packed_data);
     static void load(std::string load_path,std::vector<u32>& packed_data,u32& num_clusters);
+    static void load(std::string load_path,std::vector<u32>& data,std::string depth_path,std::vector<u32>& depths);
+
 
     std::shared_ptr<BVHNode> virtual_bvh_node;
+    u32 get_depth0();
+    std::vector<u32> get_depths();
 };

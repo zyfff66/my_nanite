@@ -25,6 +25,11 @@ Image swapchain_image(u32 idx);
 u64 bindless_buffer_layout();
 u64 bindless_buffer_set();
 
+// for bvh
+u64 bindless_buffer_bvh_set0();
+u64 bindless_buffer_bvh_set1();
+u64 bindless_buffer_bvh_layout();
+
 u64 bindless_image_layout();
 u64 bindless_image_set();
 

@@ -7,10 +7,10 @@
 
 enum BVHNodeType
 {
-    DEFAULT,
-    VIRTUAL_NODE,
-    NODE,
-    LEAF
+    DEFAULT=0,
+    VIRTUAL_NODE=1,
+    NODE=2,
+    LEAF=3
 };
 
 struct BVHNode
@@ -25,11 +25,12 @@ struct BVHNode
     u32 depth=0;
 
     BVHNodeType type=BVHNodeType::DEFAULT;
-    Sphere sphere_bounds;
+    // Sphere sphere_bounds;
     Bounds bounds;
 
     std::vector<std::shared_ptr<BVHNode>> children;
 
     // leaf node has cluster ids
-    std::vector<u32> clusters; 
+    // std::vector<u32> clusters; 
+    u32 group_id=-1;
 };

@@ -9,6 +9,8 @@
 #include "commands/barrier.h"
 #include "command_buffer_allocator.h"
 #include "commands/set_state.h"
+#include "commands/refresh_buffer.h"
+
 
 namespace vk{
 
@@ -120,6 +122,17 @@ struct CommandBuffer{
     }
 
     auto blit_image(Image img1,Image img2,ivec4 img1_range,ivec4 img2_range)->CommandBuffer;
+
+    auto refresh_buffer(Buffer buffer,u32 size)->CommandBuffer{
+        vk::refresh_buffer(handle,buffer,size);
+        return *this;
+    }
+
+    auto copy_buffer(Buffer src_buffer,Buffer dst_buffer,u64 src_offset, u64 dst_offset,u64 size)->CommandBuffer{
+        vk::copy_buffer(handle,src_buffer,dst_buffer,src_offset,dst_offset,size);
+        return *this;
+    }
+
 };
 
 

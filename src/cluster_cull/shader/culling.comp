@@ -96,7 +96,8 @@ Group get_group(uint group_id){
     return group;
 }
 
-uint get_cluster_id(Group group,uint c_idx){
+uint get_cluster_id(Group group,uint c_idx)
+{
     uint idx=1+3*num_swapchain_image();
     uint ofs=group.cluster_data_ofs;
     return buffers[idx].data[c_idx+ofs];
@@ -160,13 +161,14 @@ bool check_lod(mat4 v_mat,vec3 c,float r,float error)
 }
 
 bool frustum_cull(vec3 view_c,float r,mat4 p_mat){
-    vec3 p1=normalize(vec3(p_mat[0][0],0,1));
-    vec3 p2=normalize(vec3(-p_mat[0][0],0,1));
-    vec3 p3=normalize(vec3(0,p_mat[1][1],1));
-    vec3 p4=normalize(vec3(0,-p_mat[1][1],1));
-    return dot(p1,view_c)<r&&dot(p2,view_c)<r&&dot(p3,view_c)<r&&dot(p4,view_c)<r;
+     vec3 p1=normalize(vec3(p_mat[0][0],0,1));
+     vec3 p2=normalize(vec3(-p_mat[0][0],0,1));
+     vec3 p3=normalize(vec3(0,p_mat[1][1],1));
+     vec3 p4=normalize(vec3(0,-p_mat[1][1],1));
+     return dot(p1,view_c)<r&&dot(p2,view_c)<r&&dot(p3,view_c)<r&&dot(p4,view_c)<r;
 }
 
+// TODO: 投影至平面，需要做修正
 vec2 project_sphere(float a,float z,float r)
 {
     float t=sqrt(a*a+z*z-r*r);

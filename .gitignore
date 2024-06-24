@@ -11,4 +11,7 @@ note.md
 /.xmake
 
 /src/show
-/src/main/logs
+/src/cull2
+/src/bvh
+/src/cluster_cull/logs
+/src/lod/logs

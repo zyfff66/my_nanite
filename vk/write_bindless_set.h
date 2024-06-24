@@ -13,6 +13,12 @@ struct CombinedImageSampler{
 
 void write_bindless_set(u32 idx,Buffer buffer);
 void write_bindless_set(u32 idx,Buffer* buffer,u32 buffer_count);
+
+void write_bindless_bvh_set0(u32 idx,Buffer buffer,u32 binding);
+void write_bindless_bvh_set0(u32 idx,Buffer* buffer,u32 buffer_count,u32 binding);
+
+void write_bindless_bvh_set1(u32 idx,Buffer buffer,u32 binding);
+void write_bindless_bvh_set1(u32 idx,Buffer* buffer,u32 buffer_count,u32 binding);
 // void write_bindless_set(u32 idx,ImageView imgv);
 // void write_bindless_set(u32 idx,ImageView* imgv,u32 imgv_count);
 

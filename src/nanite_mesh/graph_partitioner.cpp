@@ -26,10 +26,10 @@ MetisGraph* to_metis_data(const Graph& graph)
     for(auto& from:graph.g)
     {
         g->adj_offset.push_back(g->adj.size());
-        for(auto [to,cost]:from)
+        for(auto f:from)
         {
-            g->adj.push_back(to);
-            g->adj_cost.push_back(cost);
+            g->adj.push_back(f.first);
+            g->adj_cost.push_back(f.second);
         }
     }
     g->adj_offset.push_back(g->adj.size());

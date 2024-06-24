@@ -21,6 +21,14 @@ namespace context{
 
     VkDescriptorPool descriptor_pool;
     VkDescriptorSet bindless_buffer_set;
+
+    // for bvh
+    VkDescriptorSet bindless_buffer_bvh_set0;
+    VkDescriptorSet bindless_buffer_bvh_set1;
+    VkDescriptorSetLayout bindless_buffer_bvh_layout;//bounding cnt>1
+    VkDescriptorPool descriptor_bvh_pool;
+
+
     VkDescriptorSet bindless_image_set;
     VkDescriptorSetLayout bindless_buffer_layout;
     VkDescriptorSetLayout bindless_image_layout;
@@ -69,6 +77,38 @@ namespace context{
             .pBindings=&binding,
         };
         VK_CHECK(vkCreateDescriptorSetLayout(device,&set_layout_desc,nullptr,&bindless_buffer_layout));
+    }
+
+    void create_bindless_buffer_bvh_layout(){
+        VkDescriptorSetLayoutBinding bindings[] =
+        {
+            {
+                .binding=0,
+                .descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,// 存储缓冲区
+                .descriptorCount=(1<<20),// 1048576
+                .stageFlags=VK_SHADER_STAGE_COMPUTE_BIT// 计算着色器阶段
+            },
+            {
+                .binding=1,
+                .descriptorType=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,// 存储缓冲区
+                .descriptorCount=(1<<20),// 1048576
+                .stageFlags=VK_SHADER_STAGE_COMPUTE_BIT//计算着色器阶段
+            }
+        };
+        // VkDescriptorBindingFlags flag=VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT
+        //                                 | VK_DESCRIPTOR_BINDING_PARTIALLY_BOUND_BIT;
+        // VkDescriptorSetLayoutBindingFlagsCreateInfo binding_flag={
+        //     .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO,
+        //     .bindingCount=2,
+        //     .pBindingFlags=&flag
+        // };
+        VkDescriptorSetLayoutCreateInfo set_layout_desc={
+            .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+            // .pNext=&binding_flag,
+            .bindingCount=2,
+            .pBindings= bindings,
+        };
+        VK_CHECK(vkCreateDescriptorSetLayout(device,&set_layout_desc,nullptr,&bindless_buffer_bvh_layout));
     }
 
     void create_bindless_image_layout(){
@@ -121,6 +161,57 @@ namespace context{
             .pSetLayouts=&bindless_buffer_layout
         };
         VK_CHECK(vkAllocateDescriptorSets(device,&desc_set_info,&bindless_buffer_set));
+    }
+
+    void create_descriptor_bvh_pool()
+    {
+        VkDescriptorPoolSize pool_size={
+            .type=VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+            .descriptorCount=(1<<22)
+        };
+        VkDescriptorPoolCreateInfo desc_pool_info={
+            .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+            .maxSets=2,
+            .poolSizeCount=1,
+            .pPoolSizes=&pool_size,
+        };
+        VK_CHECK(vkCreateDescriptorPool(device,&desc_pool_info,nullptr,&descriptor_bvh_pool));
+    }
+
+    void create_bindless_buffer_bvh_set0(){
+        
+        u32 num=(1<<21);
+        VkDescriptorSetVariableDescriptorCountAllocateInfo desc_set_ext={
+            .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO,
+            .descriptorSetCount=1,
+            .pDescriptorCounts=&num
+        };
+        VkDescriptorSetAllocateInfo desc_set_info={
+            .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+            // .pNext=&desc_set_ext,
+            .descriptorPool=descriptor_bvh_pool,
+            .descriptorSetCount=1,
+            .pSetLayouts=&bindless_buffer_bvh_layout
+        };
+        VK_CHECK(vkAllocateDescriptorSets(device,&desc_set_info,&bindless_buffer_bvh_set0));
+    }
+
+    void create_bindless_buffer_bvh_set1(){
+
+        u32 num=(1<<21);
+        VkDescriptorSetVariableDescriptorCountAllocateInfo desc_set_ext={
+            .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_VARIABLE_DESCRIPTOR_COUNT_ALLOCATE_INFO,
+            .descriptorSetCount=1,
+            .pDescriptorCounts=&num
+        };
+        VkDescriptorSetAllocateInfo desc_set_info={
+            .sType=VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+            // .pNext=&desc_set_ext,
+            .descriptorPool=descriptor_bvh_pool,
+            .descriptorSetCount=1,
+            .pSetLayouts=&bindless_buffer_bvh_layout
+        };
+        VK_CHECK(vkAllocateDescriptorSets(device,&desc_set_info,&bindless_buffer_bvh_set1));
     }
 
     void create_bindless_image_set(){
@@ -263,6 +354,14 @@ namespace context{
             create_bindless_image_layout();
 
             create_bindless_buffer_set();
+
+            // bvh
+            create_bindless_buffer_bvh_layout();
+            create_descriptor_bvh_pool();
+            create_bindless_buffer_bvh_set0();
+            create_bindless_buffer_bvh_set1();
+
+
             create_bindless_image_set();
 
             // create_default_sampler();
@@ -352,6 +451,11 @@ u32 num_swapchain_image(){return context::num_swapchain_images;/*context::swapch
 
 u64 bindless_buffer_layout(){return (u64)context::bindless_buffer_layout;}
 u64 bindless_buffer_set(){return (u64)context::bindless_buffer_set;}
+
+u64 bindless_buffer_bvh_set1(){return (u64)context::bindless_buffer_bvh_set1;}
+u64 bindless_buffer_bvh_set0(){return (u64)context::bindless_buffer_bvh_set0;}
+u64 bindless_buffer_bvh_layout(){return (u64)context::bindless_buffer_bvh_layout;}
+
 
 u64 bindless_image_layout(){return (u64)context::bindless_image_layout;}
 u64 bindless_image_set(){return (u64)context::bindless_image_set;}
